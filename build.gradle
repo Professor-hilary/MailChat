@@ -1,13 +1,25 @@
 plugins {
     id "java"
+    id "application"
+}
+
+version = '1.0.0'
+group = "com.typemaster.speedtrainer"
+
+repositories {
+    mavenCentral() // This is where our dependencies come from
+}
+
+dependencies{
+    implementation 'com.formdev:flatlaf:3.4'
 }
 
 jar {
     manifest{
         attributes "Main-Class" : "com.typemaster.speedtrainer.Main"
     }
-}
-
-dependencies{
-    implementation 'com.formdev:flatlaf:3.4'
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory()?it : zipTree(it)}
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

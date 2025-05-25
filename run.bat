@@ -14,7 +14,7 @@ call .\gradlew jar || goto :error
 
 :: Step 3: Run the app
 echo [RUN] Launching application...
-call java -jar .\build\libs\typemaster.jar || goto :error
+call java -jar .\build\libs\typemaster-1.0.0.jar || goto :error
 
 goto :eof
 
