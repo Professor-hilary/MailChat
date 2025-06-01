@@ -16,7 +16,6 @@ package com.Mailer.MailChat.components;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.io.IOException;
 
 import javax.swing.JFrame;
@@ -37,13 +36,13 @@ public class MailUI extends JFrame {
 
         setLayout(new BorderLayout());
 
-        JPanel headerSectionPanel = new JPanel(new GridLayout(2,1, 0,0));
+        JPanel headerSectionPanel = new JPanel(new BorderLayout());
         
         // Title Pane for title and close button
         FlatTitlePane titlePane = new FlatTitlePane(rootPane);
         titlePane.setPreferredSize(new Dimension(0, 40));
-        headerSectionPanel.add(titlePane);
-        headerSectionPanel.add(new RibbonPanel());
+        headerSectionPanel.add(titlePane, BorderLayout.NORTH);
+        headerSectionPanel.add(new RibbonPanel(), BorderLayout.CENTER);
 
         add(headerSectionPanel, BorderLayout.NORTH);
 
