@@ -1,14 +1,34 @@
+/***********************************************
+ * 
+ * The entry point for the project second to
+ * Main.java. This file loads the main frame
+ * and all major UI components into place -
+ * i.e. sidepanel, list panel and view panel
+ * 
+ * @author Okuonzi Hilary
+ * @date 31st May, 2025
+ * @file MailUI.java
+ * @version 1.0
+ * 
+ */
+
 package com.Mailer.MailChat.components;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.io.IOException;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+
 import com.Mailer.MailChat.components.Layout.MessageListPanel;
 import com.Mailer.MailChat.components.Layout.MessageViewPanel;
+import com.Mailer.MailChat.components.Layout.RibbonPanel;
 import com.Mailer.MailChat.components.Layout.SidebarPanel;
+import com.Mailer.MailChat.controllers.MessageController;
+import com.Mailer.MailChat.services.MessageService;
 import com.formdev.flatlaf.ui.FlatTitlePane;
 
 public class MailUI extends JFrame {
@@ -17,30 +37,30 @@ public class MailUI extends JFrame {
 
         setLayout(new BorderLayout());
 
+        JPanel headerSectionPanel = new JPanel(new GridLayout(2,1, 0,0));
+        
         // Title Pane for title and close button
         FlatTitlePane titlePane = new FlatTitlePane(rootPane);
         titlePane.setPreferredSize(new Dimension(0, 40));
-        add(titlePane, BorderLayout.NORTH);
+        headerSectionPanel.add(titlePane);
+        headerSectionPanel.add(new RibbonPanel());
 
-        // Three sections
-        SidebarPanel sidebar = new SidebarPanel();
+        add(headerSectionPanel, BorderLayout.NORTH);
+
+        // Sections controlled by sidebar
         MessageListPanel messageListPanel = new MessageListPanel();
         MessageViewPanel messageViewPanel = new MessageViewPanel();
+        
+        // Message Controller contains methods to assist sidebar panel actions
+        MessageController controller = new MessageController(new MessageService().getMessages("Inbox"), messageListPanel, messageViewPanel);
+        SidebarPanel sidebar = new SidebarPanel(controller);
 
-        // Write message selection to preview
-        messageListPanel.getMessageList().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                String selected = messageListPanel.getMessageList().getSelectedValue();
-                if (selected != null) {
-                    messageViewPanel.displayMessage(selected);
-                }
-            }
-        });
-
-        // Splits
+        messageListPanel.setMessageClickListener(controller::showMessage);
+        
+        // Splits for side panel, message view and list view
         JSplitPane verticalSplitPane = new JSplitPane(
-                JSplitPane.VERTICAL_SPLIT, messageListPanel, messageViewPanel);
-        verticalSplitPane.setDividerLocation(300);
+                JSplitPane.HORIZONTAL_SPLIT, messageListPanel, messageViewPanel);
+        verticalSplitPane.setDividerLocation(700);
 
         JSplitPane horizontalSplitPane = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT, sidebar, verticalSplitPane);

@@ -1,0 +1,48 @@
+[
+  {
+    "id": "1",
+    "from": "alice@example.com",
+    "to": ["bob@example.com"],
+    "subject": "Welcome to the team!",
+    "date": "2025-05-01T10:00:00Z",
+    "body": "Hi Bob,\n\nWelcome to the engineering team! Let me know if you need anything to get started.\n\nCheers,\nAlice",
+    "isRead": false,
+    "attachments": []
+  },
+  {
+    "id": "2",
+    "from": "news@techworld.com",
+    "to": ["you@example.com"],
+    "subject": "top 10 Programming Languages in 2025",
+    "date": "2025-05-10T08:30:00Z",
+    "body": "Stay ahead of the curve! Check out the top programming languages making waves in 2025.",
+    "isRead": true,
+    "attachments": [
+      {
+        "filename": "languages2025.pdf",
+        "type": "application/pdf",
+        "size": "1.2MB"
+      }
+    ]
+  },
+  {
+    "id": "3",
+    "from": "support@someapp.io",
+    "to": ["you@example.com"],
+    "subject": "Password Reset Request",
+    "date": "2025-05-29T14:15:00Z",
+    "body": "We received a request to reset your password. Click the link below to proceed:\n\nhttps://someapp.io/reset?token=abc123",
+    "isRead": false,
+    "attachments": []
+  },
+  {
+    "id": "4",
+    "from": "newsletter@agilealec.academy",
+    "to": ["you@example.com"],
+    "subject": "Agile Alec: Weekly Update",
+    "date": "2025-05-27T07:00:00Z",
+    "body": "Here’s what’s new this week:\n- Group Chat v2 launched\n- Agora Rooms now support video\n\nVisit the app for more updates.",
+    "isRead": true,
+    "attachments": []
+  }
+]
