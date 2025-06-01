@@ -32,7 +32,7 @@ public class MessageController {
                 .filter(msg -> msg.getCategory().equalsIgnoreCase(category))
                 .collect(Collectors.toList());
 
-        listPanel.displayMessages(filtered);
+        listPanel.displayMessages(filtered, category);
     }
 
     public void showMessage(Message message) {

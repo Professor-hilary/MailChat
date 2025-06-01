@@ -22,6 +22,9 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+
 import com.Mailer.MailChat.controllers.MessageController;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 
@@ -34,6 +37,9 @@ public class SidebarPanel extends JPanel {
         setBackground(new Color(230, 230, 230, 23));
         setPreferredSize(new Dimension(200, 0));
         setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
+
+        // Imitate a button click to generate inboxes
+        SwingUtilities.invokeLater(()->controller.filterMessages("Inbox"));
 
         addCategoryButton("Inbox", "inbox-unread", controller::filterMessages);
         addCategoryButton("Sent", "message", controller::filterMessages);
@@ -53,11 +59,13 @@ public class SidebarPanel extends JPanel {
         composeButton.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         composeButton.setMaximumSize(new Dimension(160, 40));
         composeButton.setIcon(new FlatSVGIcon("icons/compose.svg", 16, 16));
+        composeButton.setIconTextGap(10);
+        composeButton.setHorizontalAlignment(SwingConstants.LEFT);
         composeButton.addActionListener(e -> controller.composeMessage());
-
+        
         add(composeButton);
     }
-
+    
     @SuppressWarnings("unused")
     private void addCategoryButton(String title, String icon, java.util.function.Consumer<String> onClick) {
         JButton button = new JButton(title);
@@ -68,6 +76,8 @@ public class SidebarPanel extends JPanel {
         button.setBackground(new Color(90, 90, 90));
         button.setForeground(Color.WHITE);
         button.setFocusPainted(false);
+        button.setHorizontalAlignment(SwingConstants.LEFT);
+        button.setIconTextGap(10);
         button.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
         button.addActionListener(e -> onClick.accept(title));

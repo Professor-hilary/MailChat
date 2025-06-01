@@ -13,15 +13,16 @@
 package com.Mailer.MailChat.components.Layout;
 
 import javax.swing.*;
-
-import com.Mailer.MailChat.model.Message;
-
+import javax.swing.border.*;
 import java.awt.*;
 import java.util.List;
 import java.util.function.Consumer;
 
+import com.Mailer.MailChat.model.Message;
+
 public class MessageListPanel extends JPanel {
-    private JPanel listContainer;
+    private final JPanel listContainer;
+    private final JLabel titleLabel;
     private Consumer<Message> messageClickListener;
 
     public void setMessageClickListener(Consumer<Message> listener) {
@@ -30,24 +31,50 @@ public class MessageListPanel extends JPanel {
 
     public MessageListPanel() {
         setLayout(new BorderLayout());
+        // setBackground(Color.WHITE);
 
+        // Title Panel
+        JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        titlePanel.setOpaque(true);
+        titlePanel.setBorder(new CompoundBorder(
+            new MatteBorder(0, 0, 1, 0, new Color(120, 120, 120)),
+            new EmptyBorder(0, 15, 0, 15)
+        ));
+
+        titleLabel = new JLabel("Messages");
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        titlePanel.add(titleLabel);
+
+        // Scrollable Message List Container
         listContainer = new JPanel();
         listContainer.setLayout(new BoxLayout(listContainer, BoxLayout.Y_AXIS));
+        // listContainer.setBackground(Color.WHITE);
 
         JScrollPane scrollPane = new JScrollPane(listContainer);
-        // scrollPane.setBorder(null);
+        scrollPane.setBorder(null);
         scrollPane.getVerticalScrollBar().setUnitIncrement(12);
 
+        add(titlePanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
     }
 
-    public void displayMessages(List<Message> messages) {
+    public void displayMessages(List<Message> messages, String category) {
+        titleLabel.setText(category);
         listContainer.removeAll();
 
-        for (Message msg : messages) {
-            JPanel card = createMessageCard(msg);
-            listContainer.add(card);
-            listContainer.add(Box.createVerticalStrut(8));
+        if (messages.isEmpty()) {
+            JLabel emptyLabel = new JLabel("No messages found.");
+            emptyLabel.setFont(new Font("Segoe UI", Font.ITALIC, 14));
+            emptyLabel.setForeground(Color.GRAY);
+            emptyLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            listContainer.add(Box.createVerticalStrut(40));
+            listContainer.add(emptyLabel);
+        } else {
+            for (Message msg : messages) {
+                JPanel card = createMessageCard(msg);
+                listContainer.add(Box.createVerticalStrut(10));
+                listContainer.add(card);
+            }
         }
 
         listContainer.revalidate();
@@ -55,42 +82,39 @@ public class MessageListPanel extends JPanel {
     }
 
     private JPanel createMessageCard(Message message) {
-        String body = message.getBody();
-        body = (body == null) ? "" : body;
+        String body = (message.getBody() != null) ? message.getBody() : "";
 
         JPanel panel = new JPanel(new BorderLayout()) {
             @Override
             protected void paintComponent(Graphics g) {
-                super.paintComponent(g); // <<< Don't skip this.
                 Graphics2D g2d = (Graphics2D) g.create();
-                g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.18f));
-                g2d.setColor(new Color(245, 245, 245));
-                g2d.fillRect(0, 0, getWidth(), getHeight());
+                g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.16f));
+                g2d.setColor(new Color(200, 200, 200)); // Neutral alpha fill
+                g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 12, 12);
                 g2d.dispose();
-                super.paintComponent(g); // Optional depending on other drawing
             }
         };
-        panel.setBackground(new Color(245, 245, 245, 45));
+
         panel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
         panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 90));
         panel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        panel.setOpaque(false); // Allow alpha painting
 
+        // Message details
         JLabel subject = new JLabel(message.getSubject());
         subject.setFont(new Font("Segoe UI", Font.BOLD, 14));
 
         JLabel sender = new JLabel(message.getSender());
         sender.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        // sender.setForeground(Color.GRAY);
 
         JLabel preview = new JLabel("<html><div style='width: 300px;'>"
-                + message.getBody().substring(0, Math.min(80, message.getBody().length())) + "...</div></html>");
+                + body.substring(0, Math.min(80, body.length())) + "...</div></html>");
         preview.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        // preview.setForeground(Color.DARK_GRAY);
 
         JLabel time = new JLabel(message.getTimestamp().toString());
         time.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        // time.setForeground(Color.GRAY);
 
+        // Layout for text
         JPanel textPanel = new JPanel();
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
         textPanel.setOpaque(false);
@@ -102,19 +126,18 @@ public class MessageListPanel extends JPanel {
         panel.add(textPanel, BorderLayout.CENTER);
         panel.add(time, BorderLayout.EAST);
 
-        // Add mouse hover effects
-        Color baseColor = new Color(245, 245, 245);
-        Color hoverColor = new Color(230, 240, 250);
-
-        panel.setBackground(baseColor);
+        // Hover effect
+        Color hoverColor = new Color(255, 255, 255, 40); // translucent highlight
 
         panel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 panel.setBackground(hoverColor);
+                panel.repaint();
             }
 
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                panel.setBackground(baseColor);
+                panel.setBackground(null);
+                panel.repaint();
             }
 
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -124,8 +147,33 @@ public class MessageListPanel extends JPanel {
             }
         });
 
-        panel.setOpaque(false); // IMPORTANT!
-
         return panel;
     }
+
+    // Optional: Reusable rounded border for theme support
+    class RoundedBorder implements Border {
+        private int radius;
+        private Color color;
+
+        RoundedBorder(int radius, Color color) {
+            this.radius = radius;
+            this.color = color;
+        }
+
+        public Insets getBorderInsets(Component c) {
+            return new Insets(radius + 1, radius + 1, radius + 1, radius + 1);
+        }
+
+        public boolean isBorderOpaque() {
+            return false;
+        }
+
+        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setColor(color);
+            g2.setStroke(new BasicStroke(1.5f));
+            g2.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
+        }
+    }
+    
 }

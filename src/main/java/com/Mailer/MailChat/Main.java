@@ -3,7 +3,6 @@ package com.Mailer.MailChat;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.io.IOException;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -20,7 +19,7 @@ public class Main {
             tabbedFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             tabbedFrame.setSize(800, 500);
             tabbedFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-
+                        
             GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
             device.setFullScreenWindow(tabbedFrame);
 
@@ -32,7 +31,6 @@ public class Main {
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
             
-            System.out.println(err.getMessage());
             System.exit(1); // Optional: Exit program after error
         }
     } // end main
