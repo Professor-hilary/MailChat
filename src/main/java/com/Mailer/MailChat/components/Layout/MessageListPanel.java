@@ -98,20 +98,23 @@ public class MessageListPanel extends JPanel {
         panel.setCursor(new Cursor(Cursor.HAND_CURSOR));
         panel.setOpaque(false); // Allow alpha painting
         
-        // Message details
+        // Message details subject
         JLabel subject = new JLabel(message.getSubject());
         subject.setFont(new Font("Segoe UI", Font.BOLD, 14));
-
+        
+        // Message details sender
         JLabel sender = new JLabel(message.getSender());
         sender.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-
+        
+        // Message details body
         JLabel preview = new JLabel("<html><div style='width: 300px;'>"
         + body.substring(0, Math.min(80, body.length())) + "...</div></html>");
         preview.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-
+        
         LocalDateTime timestamp = message.getTimestamp();
         String timeText = (timestamp != null) ? timestamp.toString() : "Unknown Time";
         
+        // Message details date and time
         JLabel time = new JLabel(timeText);
         time.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         

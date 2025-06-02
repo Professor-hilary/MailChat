@@ -12,7 +12,7 @@ public class TitlePane extends JPanel {
     private final JFrame frame;
     private Point initialClick;
 
-    public TitlePane(JFrame frame, String titleText, Icon appIcon) {
+    public TitlePane(JFrame frame, String titleText, Icon appIcon, String errMsgString) {
         this.frame = frame;
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(0, UIScale.scale(32)));
@@ -35,6 +35,9 @@ public class TitlePane extends JPanel {
         
         leftPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
         add(leftPanel, BorderLayout.WEST);
+
+        // Add Error message
+        add(new JLabel(errMsgString), BorderLayout.CENTER);
         
         // Right: Action buttons
         JPanel actionButtons = createControlButtons();

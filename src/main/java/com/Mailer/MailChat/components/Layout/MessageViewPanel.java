@@ -70,7 +70,7 @@ public class MessageViewPanel extends JPanel {
     public void displayMessage(MessageModal message) {
         subjectLabel.setText(message.getSubject());
         fromLabel.setText("From: " + message.getSender());
-        toLabel.setText("To: " + message.getReceipients());
+        toLabel.setText("To: " + message.getReceipient());
         timestampLabel.setText("Date: " + message.getTimestamp());
         bodyArea.setText(message.getBody());
     }

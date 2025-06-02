@@ -17,6 +17,7 @@ package com.Mailer.MailChat.components;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.io.IOException;
+import java.net.SocketException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -29,44 +30,55 @@ import com.Mailer.MailChat.components.Layout.RibbonPanel;
 import com.Mailer.MailChat.components.Layout.SidebarPanel;
 import com.Mailer.MailChat.controllers.MessageController;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.sun.mail.util.MailConnectException;
+import com.sun.mail.util.SocketConnectException;
 
 public class MailUI extends JFrame {
-    public MailUI() throws IOException {
+    public MailUI() throws IOException, MailConnectException, SocketException, SocketConnectException {
         super("Mailer");
+        TitlePane titlePane = null;
+        String errMsgString = "";
 
-        setLayout(new BorderLayout());
+        try {
+            setLayout(new BorderLayout());
 
-        JPanel headerSectionPanel = new JPanel(new BorderLayout());
-        
-        FlatSVGIcon appIcon = new FlatSVGIcon("icons/inbox.svg", 16, 16);
-        
-        // Title Pane for title and close button
-        TitlePane titlePane =new TitlePane(this, "MailChat", appIcon);
-        titlePane.setPreferredSize(new Dimension(0, 40));
-        headerSectionPanel.add(titlePane, BorderLayout.NORTH);
-        headerSectionPanel.add(new RibbonPanel(), BorderLayout.CENTER);
+            // String errMsg = "";
 
-        add(headerSectionPanel, BorderLayout.NORTH);
+            JPanel headerSectionPanel = new JPanel(new BorderLayout());
 
-        // Sections controlled by sidebar
-        MessageListPanel messageListPanel = new MessageListPanel();
-        MessageViewPanel messageViewPanel = new MessageViewPanel();
-        
-        // Message Controller contains methods to assist sidebar panel actions
-        MessageController controller = new MessageController(/* new MessageService().getMessages("Inbox"),  */messageListPanel, messageViewPanel);
-        SidebarPanel sidebar = new SidebarPanel(controller);
+            FlatSVGIcon appIcon = new FlatSVGIcon("icons/inbox.svg", 16, 16);
 
-        messageListPanel.setMessageClickListener(controller::showMessage);
-        
-        // Splits for side panel, message view and list view
-        JSplitPane verticalSplitPane = new JSplitPane(
-                JSplitPane.HORIZONTAL_SPLIT, messageListPanel, messageViewPanel);
-        verticalSplitPane.setDividerLocation(700);
+            // Title Pane for title and close button
+            titlePane = new TitlePane(this, "MailChat", appIcon, errMsgString);
+            titlePane.setPreferredSize(new Dimension(0, 40));
+            headerSectionPanel.add(titlePane, BorderLayout.NORTH);
+            headerSectionPanel.add(new RibbonPanel(), BorderLayout.CENTER);
 
-        JSplitPane horizontalSplitPane = new JSplitPane(
-                JSplitPane.HORIZONTAL_SPLIT, sidebar, verticalSplitPane);
-        horizontalSplitPane.setDividerLocation(200);
+            add(headerSectionPanel, BorderLayout.NORTH);
 
-        add(horizontalSplitPane); // Add JTabbedPane to frame
+            // Sections controlled by sidebar
+            MessageListPanel messageListPanel = new MessageListPanel();
+            MessageViewPanel messageViewPanel = new MessageViewPanel();
+
+            // Message Controller contains methods to assist sidebar panel actions
+            MessageController controller = new MessageController(
+                    /* new MessageService().getMessages("Inbox"), */messageListPanel, messageViewPanel);
+            SidebarPanel sidebar = new SidebarPanel(controller);
+
+            messageListPanel.setMessageClickListener(controller::showMessage);
+
+            // Splits for side panel, message view and list view
+            JSplitPane verticalSplitPane = new JSplitPane(
+                    JSplitPane.HORIZONTAL_SPLIT, messageListPanel, messageViewPanel);
+            verticalSplitPane.setDividerLocation(700);
+
+            JSplitPane horizontalSplitPane = new JSplitPane(
+                    JSplitPane.HORIZONTAL_SPLIT, sidebar, verticalSplitPane);
+            horizontalSplitPane.setDividerLocation(200);
+
+            add(horizontalSplitPane); // Add JTabbedPane to frame
+        } catch (Exception error) {
+            errMsgString = "Network error";
+        }
     } // end TabbedFrame constructor
 } // end class TabbedFrame

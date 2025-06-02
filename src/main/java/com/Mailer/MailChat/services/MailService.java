@@ -10,9 +10,10 @@ import java.util.List;
 import java.util.Properties;
 
 import com.Mailer.MailChat.model.MessageModal;
+import com.sun.mail.util.MailConnectException;
+import com.sun.mail.util.SocketConnectException;
 
 public class MailService {
-
     public boolean send(com.Mailer.MailChat.model.MessageModal mail) {
         try {
             Properties props = new Properties();
@@ -42,7 +43,7 @@ public class MailService {
         }
     }
 
-    public List<MessageModal> fetchInbox(String email, String password, String host, int port) {
+    public List<MessageModal> fetchInbox(String email, String password, String host, int port) throws MailConnectException, SocketConnectException {
         List<MessageModal> mails = new ArrayList<>();
         try {
             Properties props = new Properties();
@@ -74,8 +75,18 @@ public class MailService {
             inbox.close(false);
             store.close();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } 
+        catch (MailConnectException error) {
+            throw new MailConnectException(null);
+            // error.printStackTrace();
+        }
+        catch (SocketConnectException error) {
+            throw new SocketConnectException("Error",error,"mail.imap.host",0,0);
+            // error.printStackTrace();
+        }
+        catch (Exception error) {
+            // throw new MailConnectException(null);
+            error.printStackTrace();
         }
         return mails;
     }
