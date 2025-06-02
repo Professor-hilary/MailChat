@@ -24,11 +24,10 @@ import javax.swing.JSplitPane;
 
 import com.Mailer.MailChat.components.Layout.MessageListPanel;
 import com.Mailer.MailChat.components.Layout.MessageViewPanel;
-import com.Mailer.MailChat.components.Layout.MyTitlePane;
+import com.Mailer.MailChat.components.Layout.TitlePane;
 import com.Mailer.MailChat.components.Layout.RibbonPanel;
 import com.Mailer.MailChat.components.Layout.SidebarPanel;
 import com.Mailer.MailChat.controllers.MessageController;
-import com.Mailer.MailChat.services.MessageService;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 public class MailUI extends JFrame {
@@ -39,10 +38,10 @@ public class MailUI extends JFrame {
 
         JPanel headerSectionPanel = new JPanel(new BorderLayout());
         
-        FlatSVGIcon appIcon = new FlatSVGIcon("icons/inbox.svg", 16, 16); // Put your actual SVG path
+        FlatSVGIcon appIcon = new FlatSVGIcon("icons/inbox.svg", 16, 16);
         
         // Title Pane for title and close button
-        MyTitlePane titlePane =new MyTitlePane(this, "MailChat", appIcon);
+        TitlePane titlePane =new TitlePane(this, "MailChat", appIcon);
         titlePane.setPreferredSize(new Dimension(0, 40));
         headerSectionPanel.add(titlePane, BorderLayout.NORTH);
         headerSectionPanel.add(new RibbonPanel(), BorderLayout.CENTER);
@@ -54,7 +53,7 @@ public class MailUI extends JFrame {
         MessageViewPanel messageViewPanel = new MessageViewPanel();
         
         // Message Controller contains methods to assist sidebar panel actions
-        MessageController controller = new MessageController(new MessageService().getMessages("Inbox"), messageListPanel, messageViewPanel);
+        MessageController controller = new MessageController(/* new MessageService().getMessages("Inbox"),  */messageListPanel, messageViewPanel);
         SidebarPanel sidebar = new SidebarPanel(controller);
 
         messageListPanel.setMessageClickListener(controller::showMessage);

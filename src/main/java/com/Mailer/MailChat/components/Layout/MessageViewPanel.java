@@ -15,7 +15,7 @@ package com.Mailer.MailChat.components.Layout;
 
 import javax.swing.*;
 
-import com.Mailer.MailChat.model.Message;
+import com.Mailer.MailChat.model.MessageModal;
 
 import java.awt.*;
 
@@ -29,8 +29,7 @@ public class MessageViewPanel extends JPanel {
     public MessageViewPanel() {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        // setBackground(new Color(226,196,43,22));
-         setPreferredSize(new Dimension(0, 230));
+        setPreferredSize(new Dimension(0, 230));
 
         subjectLabel = new JLabel("Subject");
         subjectLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
@@ -44,12 +43,12 @@ public class MessageViewPanel extends JPanel {
         toLabel.setFont(metaFont);
         timestampLabel.setFont(metaFont);
 
-        bodyArea = new JTextArea();
+        bodyArea = new JTextArea(1, 1);
         bodyArea.setFont(new Font("Serif", Font.PLAIN, 14));
         bodyArea.setLineWrap(true);
         bodyArea.setWrapStyleWord(true);
         bodyArea.setEditable(false);
-        // bodyArea.setBackground(Color.WHITE);
+
         bodyArea.setBorder(null);
 
         JPanel headerPanel = new JPanel();
@@ -68,7 +67,7 @@ public class MessageViewPanel extends JPanel {
         add(bodyScroll, BorderLayout.CENTER);
     }
 
-    public void displayMessage(Message message) {
+    public void displayMessage(MessageModal message) {
         subjectLabel.setText(message.getSubject());
         fromLabel.setText("From: " + message.getSender());
         toLabel.setText("To: " + message.getReceipients());

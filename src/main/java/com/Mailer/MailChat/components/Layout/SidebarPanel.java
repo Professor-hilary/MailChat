@@ -23,7 +23,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 
 import com.Mailer.MailChat.controllers.MessageController;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
@@ -38,16 +37,17 @@ public class SidebarPanel extends JPanel {
         setPreferredSize(new Dimension(200, 0));
         setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
 
-        // Imitate a button click to generate inboxes
-        SwingUtilities.invokeLater(()->controller.filterMessages("Inbox"));
+        // Imitate a button click to show inboxes in messages list panel
+        // SwingUtilities.invokeLater(() -> controller.filterMessages("Inbox"));
 
-        addCategoryButton("Inbox", "inbox-unread", controller::filterMessages);
-        addCategoryButton("Sent", "message", controller::filterMessages);
-        addCategoryButton("Drafts", "notepad", controller::filterMessages);
-        addCategoryButton("Important", "cloud-saved", controller::filterMessages);
-        addCategoryButton("Unread", "message-2", controller::filterMessages);
-        addCategoryButton("Spam", "garbage", controller::filterMessages);
-        addCategoryButton("Trash", "trash-bin", controller::filterMessages);
+        // Buttons for message categories
+        addCategoryButton("Inbox", "inbox-unread", controller::filterMessages, controller);
+        addCategoryButton("Sent", "message", controller::filterMessages, controller);
+        addCategoryButton("Drafts", "notepad", controller::filterMessages, controller);
+        addCategoryButton("Important", "cloud-saved", controller::filterMessages, controller);
+        addCategoryButton("Unread", "message-2", controller::filterMessages, controller);
+        addCategoryButton("Spam", "garbage", controller::filterMessages, controller);
+        addCategoryButton("Trash", "trash-bin", controller::filterMessages, controller);
         add(Box.createVerticalStrut(30));
 
         JButton composeButton = new JButton("Compose");
@@ -62,12 +62,13 @@ public class SidebarPanel extends JPanel {
         composeButton.setIconTextGap(10);
         composeButton.setHorizontalAlignment(SwingConstants.LEFT);
         composeButton.addActionListener(e -> controller.composeMessage());
-        
+
         add(composeButton);
     }
-    
+
     @SuppressWarnings("unused")
-    private void addCategoryButton(String title, String icon, java.util.function.Consumer<String> onClick) {
+    private void addCategoryButton(String title, String icon, java.util.function.Consumer<String> onClick,
+            MessageController controller) {
         JButton button = new JButton(title);
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
         button.setMaximumSize(new Dimension(160, 40));
@@ -80,6 +81,13 @@ public class SidebarPanel extends JPanel {
         button.setIconTextGap(10);
         button.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
+        if (button.getText() == "Inbox") {
+            // Inbox receiving component
+            button.addActionListener(e -> {
+                controller.fetchInbox(
+                        "hilaryokuonzi9@gmail.com", "ehzp qwtk sqvp xlqa", "imap.gmail.com", 993);
+            });
+        }
         button.addActionListener(e -> onClick.accept(title));
         add(button);
         add(Box.createVerticalStrut(10));

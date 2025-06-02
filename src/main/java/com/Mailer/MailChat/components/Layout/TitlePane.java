@@ -8,11 +8,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 
-public class MyTitlePane extends JPanel {
+public class TitlePane extends JPanel {
     private final JFrame frame;
     private Point initialClick;
 
-    public MyTitlePane(JFrame frame, String titleText, Icon appIcon) {
+    public TitlePane(JFrame frame, String titleText, Icon appIcon) {
         this.frame = frame;
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(0, UIScale.scale(32)));

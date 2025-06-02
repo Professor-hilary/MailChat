@@ -30,7 +30,7 @@ public class Main {
                     "An error occured: " + err.getMessage(),
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
-            
+            System.out.println(err.getMessage());
             System.exit(1); // Optional: Exit program after error
         }
     } // end main

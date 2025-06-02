@@ -18,11 +18,12 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-public class Message {
+public class MessageModal {
     @SuppressWarnings("unused")
     private String id;
     private String sender;
     private List<String> receipients;
+    private String receipient;
     private String subject;
     private boolean isRead;
     private String body;
@@ -31,7 +32,7 @@ public class Message {
     private String errorMsg = "undefined";
     private String folder; // inbox, sent, draft, trash
 
-    public Message(String sender, String receipients, String subject, String body, LocalDateTime timestamp,
+    public MessageModal(String sender, String receipients, String subject, String body, LocalDateTime timestamp,
             String folder) {
         this.sender = sender;
         this.receipients = Arrays.asList(receipients.split(","));
@@ -41,7 +42,22 @@ public class Message {
         this.folder = folder;
     }
 
-    public Message() {
+    public MessageModal(String from, String to, String subject, String body, String category) {
+        this.sender = from;
+        this.receipient = to;
+        this.subject = subject;
+        this.body = body;
+        this.folder = category;
+    }
+
+    public MessageModal(String from, String to, String subject, String body) {
+        this.sender = from;
+        this.receipient = to;
+        this.subject = subject;
+        this.body = body;
+    }
+
+    public MessageModal() {
         // This is a default empty constructor
     }
 
@@ -56,6 +72,10 @@ public class Message {
 
     public void setReceipients(String receipients) {
         this.receipients = Arrays.asList(receipients.split(","));
+    }
+
+    public void setReceipient(String receipient) {
+        this.receipient = receipient;
     }
 
     public void setSubject(String subject) {
@@ -126,6 +146,14 @@ public class Message {
     public List<String> getReceipients() {
         try {
             return receipients;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public String getReceipient() {
+        try {
+            return receipient;
         } catch (Exception e) {
             return null;
         }

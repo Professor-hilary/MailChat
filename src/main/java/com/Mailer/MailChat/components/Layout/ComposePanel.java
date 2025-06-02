@@ -29,7 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import com.Mailer.MailChat.model.Message;
+import com.Mailer.MailChat.model.MessageModal;
 import com.Mailer.MailChat.services.MessageService;
 
 public class ComposePanel extends JDialog {
@@ -101,17 +101,11 @@ public class ComposePanel extends JDialog {
 
         sendButton.addActionListener(event -> {
             // Simulate sending
-            Message msg = new Message();
+            MessageModal msg = new MessageModal();
             msg.setReceipients(toTextField.getText());
             msg.setSubject(subjecTextField.getText());
             msg.setBody(editorPane.getText());
             new MessageService().sendMessage(msg);
-
-            /*
-             * new Message(fromTextField.getText(), toTextField.getText(),
-             * subjecTextField.getText(), editorPane.getText(), LocalDateTime.now(),
-             * "Sent");
-             */
 
             JOptionPane.showMessageDialog(this, "Message sent.");
             dispose();

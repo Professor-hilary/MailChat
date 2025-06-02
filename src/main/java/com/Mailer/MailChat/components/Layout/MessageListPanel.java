@@ -16,30 +16,29 @@ import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
 import java.util.List;
+import java.time.LocalDateTime;
 import java.util.function.Consumer;
 
-import com.Mailer.MailChat.model.Message;
+import com.Mailer.MailChat.model.MessageModal;
 
 public class MessageListPanel extends JPanel {
     private final JPanel listContainer;
     private final JLabel titleLabel;
-    private Consumer<Message> messageClickListener;
+    private Consumer<MessageModal> messageClickListener;
 
-    public void setMessageClickListener(Consumer<Message> listener) {
+    public void setMessageClickListener(Consumer<MessageModal> listener) {
         this.messageClickListener = listener;
     }
 
     public MessageListPanel() {
         setLayout(new BorderLayout());
-        // setBackground(Color.WHITE);
 
         // Title Panel
         JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         titlePanel.setOpaque(true);
         titlePanel.setBorder(new CompoundBorder(
-            new MatteBorder(0, 0, 1, 0, new Color(120, 120, 120)),
-            new EmptyBorder(0, 15, 0, 15)
-        ));
+                new MatteBorder(0, 0, 1, 0, new Color(120, 120, 120)),
+                new EmptyBorder(0, 15, 0, 15)));
 
         titleLabel = new JLabel("Messages");
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 22));
@@ -48,7 +47,6 @@ public class MessageListPanel extends JPanel {
         // Scrollable Message List Container
         listContainer = new JPanel();
         listContainer.setLayout(new BoxLayout(listContainer, BoxLayout.Y_AXIS));
-        // listContainer.setBackground(Color.WHITE);
 
         JScrollPane scrollPane = new JScrollPane(listContainer);
         scrollPane.setBorder(null);
@@ -58,10 +56,11 @@ public class MessageListPanel extends JPanel {
         add(scrollPane, BorderLayout.CENTER);
     }
 
-    public void displayMessages(List<Message> messages, String category) {
+    public void displayMessages(List<MessageModal> messages, String category) {
         titleLabel.setText(category);
         listContainer.removeAll();
-
+        listContainer.setBorder(BorderFactory.createEmptyBorder(0, 5, 10, 5));
+        
         if (messages.isEmpty()) {
             JLabel emptyLabel = new JLabel("No messages found.");
             emptyLabel.setFont(new Font("Segoe UI", Font.ITALIC, 14));
@@ -70,7 +69,7 @@ public class MessageListPanel extends JPanel {
             listContainer.add(Box.createVerticalStrut(40));
             listContainer.add(emptyLabel);
         } else {
-            for (Message msg : messages) {
+            for (MessageModal msg : messages) {
                 JPanel card = createMessageCard(msg);
                 listContainer.add(Box.createVerticalStrut(10));
                 listContainer.add(card);
@@ -81,7 +80,7 @@ public class MessageListPanel extends JPanel {
         listContainer.repaint();
     }
 
-    private JPanel createMessageCard(Message message) {
+    private JPanel createMessageCard(MessageModal message) {
         String body = (message.getBody() != null) ? message.getBody() : "";
 
         JPanel panel = new JPanel(new BorderLayout()) {
@@ -89,17 +88,16 @@ public class MessageListPanel extends JPanel {
             protected void paintComponent(Graphics g) {
                 Graphics2D g2d = (Graphics2D) g.create();
                 g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.16f));
-                g2d.setColor(new Color(200, 200, 200)); // Neutral alpha fill
+                g2d.setColor(new Color(200, 200, 200, 80)); // Neutral alpha fill
                 g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 12, 12);
                 g2d.dispose();
             }
         };
 
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
         panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 90));
         panel.setCursor(new Cursor(Cursor.HAND_CURSOR));
         panel.setOpaque(false); // Allow alpha painting
-
+        
         // Message details
         JLabel subject = new JLabel(message.getSubject());
         subject.setFont(new Font("Segoe UI", Font.BOLD, 14));
@@ -108,12 +106,15 @@ public class MessageListPanel extends JPanel {
         sender.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 
         JLabel preview = new JLabel("<html><div style='width: 300px;'>"
-                + body.substring(0, Math.min(80, body.length())) + "...</div></html>");
+        + body.substring(0, Math.min(80, body.length())) + "...</div></html>");
         preview.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 
-        JLabel time = new JLabel(message.getTimestamp().toString());
+        LocalDateTime timestamp = message.getTimestamp();
+        String timeText = (timestamp != null) ? timestamp.toString() : "Unknown Time";
+        
+        JLabel time = new JLabel(timeText);
         time.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-
+        
         // Layout for text
         JPanel textPanel = new JPanel();
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
@@ -122,7 +123,8 @@ public class MessageListPanel extends JPanel {
         textPanel.add(Box.createVerticalStrut(3));
         textPanel.add(sender);
         textPanel.add(preview);
-
+        
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
         panel.add(textPanel, BorderLayout.CENTER);
         panel.add(time, BorderLayout.EAST);
 
@@ -133,16 +135,19 @@ public class MessageListPanel extends JPanel {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 panel.setBackground(hoverColor);
                 panel.repaint();
+                System.out.println("Hovered Entered");
             }
 
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 panel.setBackground(null);
                 panel.repaint();
+                System.out.println("Hovered Exited");
             }
 
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 if (messageClickListener != null) {
                     messageClickListener.accept(message);
+                    System.out.println("Card clicked");
                 }
             }
         });
@@ -175,5 +180,5 @@ public class MessageListPanel extends JPanel {
             g2.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
         }
     }
-    
+
 }
